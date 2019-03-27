@@ -1,0 +1,19 @@
+{
+  "name": "feedly-cli",
+  "version": "1.0.0",
+  "description": "A simple Feedly CLI app",
+  "main": "index.js",
+  "repository": "github.com/martijngastkemper/feedly-cli",
+  "author": "Martijn Gastkemper",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "commander": "^2.19.0",
+    "configstore": "^4.0.0",
+    "enquirer": "^2.3.0",
+    "html-metadata": "^1.7.0",
+    "mem": "^4.2.0",
+    "valid-url": "^1.0.9"
+  }
+}
