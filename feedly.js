@@ -7,7 +7,7 @@ const
     Configstore = require('configstore'),
     { Input, MultiSelect } = require('enquirer'),
     mem         = require('mem'),
-    parseMeta   = require('html-metadata').parseOpenGraph,
+    parseMeta   = require('html-metadata').parseAll,
     pkg         = require('./package.json'),
     program     = require('commander'),
     validUrl    = require('valid-url')
@@ -70,6 +70,13 @@ const getPageMetadata = mem(url => {
     return axios.get(url)
         .then(({ data }) => Cheerio.load(data))
         .then(cheerio => parseMeta(cheerio))
+        .then(allMeta => {
+            const { title, description } = allMeta.hasOwnProperty('opengraph')
+                ? allMeta.opengraph
+                : allMeta.general;
+
+            return { title, description };
+        })
     ;
 });
 
@@ -144,5 +151,3 @@ saveUrl(urlValue)
     .then(() => console.log('Klaar!'))
     .catch(error => console.log(error))
 ;
-
-
