@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  feedly-cli 
+
+  Add an url to your Feedly account
+  
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: feedly-cli 
+    Author: martijngastkemper 
+    Description: Add an url to your Feedly account
+
+Globals:
+  Function:
+    KmsKeyArn: !GetAtt KMSKey.Arn
+    Environment:
+      Variables:
+          FEEDLY_ACCESS_KEY: '{{resolve:ssm:FeedlyAccessKey:3}}'
+
+Resources:
+
+  FeedlyCliFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda.lambdaHandler
+      Runtime: nodejs8.10
+      Events:
+        HelloWorld:
+          Type: Api 
+          Properties:
+            Path: /hello
+            Method: get
+
+  KMSKey:
+     Type: AWS::KMS::Key
+     Properties:
+       KeyPolicy:
+         Id: "FeedlyCli"
+         Statement:
+            - 
+               Sid: "Allow administration of the key"
+               Effect: "Allow"
+               Action:
+                 - "kms:Create*"
+                 - "kms:Describe*"
+                 - "kms:Enable*"
+                 - "kms:List*"
+                 - "kms:Put*"
+                 - "kms:Update*"
+                 - "kms:Revoke*"
+                 - "kms:Disable*"
+                 - "kms:Get*"
+                 - "kms:Delete*"
+                 - "kms:ScheduleKeyDeletion"
+                 - "kms:CancelKeyDeletion"
+                 - "kms:Decrypt"
+                 - "kms:Encrypt"
+               Principal:
+                 AWS: !Ref AWS::AccountId
+               Resource: '*'
+

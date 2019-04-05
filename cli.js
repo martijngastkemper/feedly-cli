@@ -5,6 +5,7 @@ const
     axios       = require('axios'),
     Cheerio     = require('cheerio'),
     Configstore = require('configstore'),
+    Feedly      = require('./src/feedly.js'),
     { Input, MultiSelect } = require('enquirer'),
     mem         = require('mem'),
     parseMeta   = require('html-metadata').parseAll,
@@ -56,16 +57,6 @@ const getAccessToken = () => {
     });
 };
 
-const initFeedly = mem(() => {
-    return getAccessToken()
-        .then(access_token => {
-            return axios.create({
-                baseURL: 'https://cloud.feedly.com/v3',
-                headers: {'Authorization': access_token} 
-            });
-        });
-});
-
 const getPageMetadata = mem(url => {
     return axios.get(url)
         .then(({ data }) => Cheerio.load(data))
@@ -81,7 +72,7 @@ const getPageMetadata = mem(url => {
 });
 
 const listTags = mem(() => {
-    return initFeedly()
+    return Feedly.init(getAccessToken) 
         .then(feedly => feedly.get('/tags'))
         .then(({ data }) => data)
     ;
@@ -119,7 +110,7 @@ const toFeedlyTagObject = tagId => {
 };
 
 const postToFeedly = (url, tags, title, description) => {
-    return initFeedly().then(feedly => {
+    return Feedly.init(getAccessToken).then(feedly => {
         return feedly.post('/entries', {
             tags: tags.map(toFeedlyTagObject), 
             alternate: [
