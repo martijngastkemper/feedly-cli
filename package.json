@@ -7,6 +7,7 @@
   "author": "Martijn Gastkemper",
   "license": "MIT",
   "dependencies": {
+    "@sentry/node": "5.0.6",
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "commander": "^2.19.0",

@@ -17,6 +17,7 @@ Globals:
     Environment:
       Variables:
           FEEDLY_ACCESS_KEY: '{{resolve:ssm:FeedlyAccessKey:3}}'
+          SENTRY_DSN: '{{resolve:ssm:SentryDSN:1}}'
 
 Resources:
 
