@@ -2,15 +2,9 @@ const Feedly = require('./src/feedly.js');
 
 let response;
 
-const getAccessToken = () => {
-    return new Promise((resolve, reject) => {
-        resolve(process.env.FEEDLY_ACCESS_KEY);
-    });
-};
-
 exports.lambdaHandler = async (event, context) => {
     try {
-        const api = Feedly.init(getAccessToken);
+        const api = Feedly.init(process.env.FEEDLY_ACCESS_KEY);
         const tags = await Feedly.listTags(api);
         response = {
             'statusCode': 200,
