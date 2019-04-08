@@ -3,13 +3,13 @@ Transform: AWS::Serverless-2016-10-31
 Description: >
   feedly-cli 
 
-  Add an url to your Feedly account
+  Add a url to your Feedly account
   
 Metadata:
   AWS::ServerlessRepo::Application:
     Name: feedly-cli 
     Author: martijngastkemper 
-    Description: Add an url to your Feedly account
+    Description: Add a url to your Feedly account
 
 Globals:
   Function:
