@@ -27,6 +27,11 @@ Resources:
       Handler: lambda.lambdaHandler
       Runtime: nodejs8.10
       Events:
+        Status:
+            Type: Api
+            Properties:
+                Path: /status
+                Method: get
         HelloWorld:
           Type: Api 
           Properties:

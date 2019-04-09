@@ -9,3 +9,6 @@ deploy: build
 	
 test: build
 	echo "{}" | sam local invoke --env-vars=./env.json
+
+local-api: build
+	sam local start-api --env-vars=./env.json

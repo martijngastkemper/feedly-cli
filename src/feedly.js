@@ -5,17 +5,21 @@ const
 
 const feedly = {
 
-    init : mem((access_token) => {
+    init : mem(access_token => {
         return axios.create({
             baseURL: 'https://cloud.feedly.com/v3',
             headers: {'Authorization': access_token} 
         });
     }),
 
-    listTags : mem((feedly) => {
+    listTags : mem(feedly => {
         return feedly.get('/tags')
             .then(({ data }) => data)
         ;
+    }),
+
+    profile : mem(feedly => {
+        return feedly.get('/profile');
     })
 }
 module.exports = feedly;
