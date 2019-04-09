@@ -17,7 +17,7 @@ exports.lambdaHandler = async (event, context) => {
                 "statusCode": 200,
                 'body': `Hi ${profile.data.givenName}, You've ${headers['x-ratelimit-limit'] - profile.headers['x-ratelimit-count']} calls left for the next ${Math.round(headers['x-ratelimit-reset'] / 360) / 10} hours.`
             };
-        } else if (event.path === '/hello') {
+        } else if (event.path === '/labels') {
             const tags = await Feedly.listTags(api);
             response = {
                 'statusCode': 200,

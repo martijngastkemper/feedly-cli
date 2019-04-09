@@ -32,10 +32,10 @@ Resources:
             Properties:
                 Path: /status
                 Method: get
-        HelloWorld:
+        Labels:
           Type: Api 
           Properties:
-            Path: /hello
+            Path: /labels
             Method: get
 
   KMSKey:
