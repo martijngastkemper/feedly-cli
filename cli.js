@@ -96,8 +96,7 @@ const choiceTags = async () => {
                 name: "tags",
                 message: "Which tags do you want to give this url?",
                 choices: () => {
-                    let tagLabels = tags.map(({label}) => label);
-                    return tagLabels.filter(label => label);
+                    return tags.map(({label}) => label);
                 }
             });
             return question.run().then(choices => {
