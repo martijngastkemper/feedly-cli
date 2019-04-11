@@ -14,7 +14,15 @@ const feedly = {
 
     listTags : mem(feedly => {
         return feedly.get('/tags')
-            .then(({ data }) => data)
+            .then(({ data }) => {
+                data.map(labelData => {
+                    if (labelData.id.includes('global.save')) {
+                        labelData.label = 'Read later';
+                    }
+                    return data;
+                });
+                return data;
+            })
         ;
     }),
 

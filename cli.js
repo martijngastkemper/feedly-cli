@@ -89,20 +89,21 @@ const getTagIdentifier = (tagLabels) => {
     });
 };
 
-const choiceTags = () => {
-    return Feedly.listTags(feedlyApi).then(tags => {
-        const question = new MultiSelect({
-            name: "tags",
-            message: "Which tags do you want to give this url?",
-            choices: () => {
-                let test = tags.map(({label}) => label);
-                return test.filter(label => label);
-            }
+const choiceTags = async () => {
+    return Feedly.listTags(await feedlyApi())
+        .then(tags => {
+            const question = new MultiSelect({
+                name: "tags",
+                message: "Which tags do you want to give this url?",
+                choices: () => {
+                    let tagLabels = tags.map(({label}) => label);
+                    return tagLabels.filter(label => label);
+                }
+            });
+            return question.run().then(choices => {
+                return getTagIdentifier(choices);
+            });
         });
-        return question.run().then(choices => {
-            return getTagIdentifier(choices);
-        });
-    });
 };
 
 const toFeedlyTagObject = tagId => {
