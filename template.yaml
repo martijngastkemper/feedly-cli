@@ -32,11 +32,19 @@ Resources:
             Properties:
                 Path: /status
                 Method: get
+
         Labels:
           Type: Api 
           Properties:
             Path: /labels
             Method: get
+
+        ReadLater:
+            Type: Api
+            Properties:
+                Path: /read-later
+                Method: post
+
 
   KMSKey:
      Type: AWS::KMS::Key

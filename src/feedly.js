@@ -26,13 +26,13 @@ module.exports = class Feedly {
         return this.api.get('/profile');
     }
 
-    toTagObject(tagId) {
+    createTag(tagId) {
         return {id: tagId};
     }
 
     post(url, tags, title, description) {
         return this.api.post('/entries', {
-            tags: tags.map(this.toTagObject), 
+            tags: tags.map(this.createTag), 
             alternate: [
                 {
                     href: url,
