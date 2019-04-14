@@ -60,7 +60,7 @@ const getAccessToken = () => {
 const feedlyApi = mem(() => {
     return getAccessToken()
         .then(access_token => {
-            return Feedly.init(access_token);
+            return new Feedly(access_token);
         });
 });
 
@@ -78,8 +78,9 @@ const getPageMetadata = mem(url => {
     ;
 });
 
-const getTagIdentifier = (tagLabels) => {
-    return Feedly.listTags(feedlyApi).then(tags => {
+const getTagIdentifier = async (tagLabels) => {
+    const api = await feedlyApi();
+    return api.listTags().then(tags => {
         return tags.reduce((acc, tag) => {
             if (tagLabels.find(label => label === tag.label)) {
                 acc.push(tag.id);
@@ -90,7 +91,8 @@ const getTagIdentifier = (tagLabels) => {
 };
 
 const choiceTags = async () => {
-    return Feedly.listTags(await feedlyApi())
+    const api = await feedlyApi();
+    return api.listTags()
         .then(tags => {
             const question = new MultiSelect({
                 name: "tags",
@@ -105,36 +107,13 @@ const choiceTags = async () => {
         });
 };
 
-const toFeedlyTagObject = tagId => {
-    return {id: tagId};
-};
-
-const postToFeedly = (url, tags, title, description) => {
-    return feedlyApi().then(feedly => {
-        return feedly.post('/entries', {
-            tags: tags.map(toFeedlyTagObject), 
-            alternate: [
-                {
-                    href: url,
-                    type: 'text/html'
-                }
-            ],
-            origin: {
-                "title": title,
-                "htmlUrl": url
-            },
-            title: title,
-            description: description
-        });
-    });
-};
-
 const saveUrl = (url) => {
-    return Promise.all([getPageMetadata(url), choiceTags()])
+    return Promise.all([getPageMetadata(url), choiceTags(), feedlyApi()])
         .then(results => {
             const metadata = results[0];
             const tags = results[1];
-            return postToFeedly(url, tags, metadata.title, metadata.description);
+            const feedly = results[2];
+            return feedly.post(url, tags, metadata.title, metadata.description);
         });
 };
 

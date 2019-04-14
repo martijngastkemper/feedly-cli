@@ -1,19 +1,16 @@
+const axios  = require('axios');
 
-const
-    axios  = require('axios'),
-    mem    = require('mem');
+module.exports = class Feedly {
 
-const feedly = {
-
-    init : mem(access_token => {
-        return axios.create({
+    constructor(access_token) {
+        this.api =  axios.create({
             baseURL: 'https://cloud.feedly.com/v3',
             headers: {'Authorization': access_token} 
         });
-    }),
+    }
 
-    listTags : mem(feedly => {
-        return feedly.get('/tags')
+    listTags() {
+        return this.api.get('/tags')
             .then(({ data }) => {
                 data.map(labelData => {
                     if (labelData.id.includes('global.save')) {
@@ -22,12 +19,32 @@ const feedly = {
                     return data;
                 });
                 return data;
-            })
-        ;
-    }),
+            }) ;
+    }
 
-    profile : mem(feedly => {
-        return feedly.get('/profile');
-    })
+    profile() {
+        return this.api.get('/profile');
+    }
+
+    toTagObject(tagId) {
+        return {id: tagId};
+    }
+
+    post(url, tags, title, description) {
+        return this.api.post('/entries', {
+            tags: tags.map(this.toTagObject), 
+            alternate: [
+                {
+                    href: url,
+                    type: 'text/html'
+                }
+            ],
+            origin: {
+                "title": title,
+                "htmlUrl": url
+            },
+            title: title,
+            description: description
+        });
+    };
 }
-module.exports = feedly;
