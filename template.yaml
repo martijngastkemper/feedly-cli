@@ -18,6 +18,7 @@ Globals:
       Variables:
           FEEDLY_ACCESS_KEY: !GetAtt FeedlyAccessKey.Value
           SENTRY_DSN: !GetAtt SentryDSN.Value
+          SLACK_FEEDLY_USAGE: !GetAtt SlackFeedlyUsage.Value
 
 Resources:
 
@@ -87,3 +88,10 @@ Resources:
           Type: "String"
           Value: "dummy-value"
           Description: "Feedly-cli Feedly Access Key"
+
+  SlackFeedlyUsage:
+      Type: AWS::SSM::Parameter
+      Properties:
+          Type: "String"
+          Value: "dummy-value"
+          Description: "Post message to Slack with Feedly API usage stats"

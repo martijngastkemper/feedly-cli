@@ -1,17 +1,34 @@
-const axios  = require('axios');
+const axios  = require('axios'),
+    { IncomingWebhook } = require('@slack/webhook')
+;
+const webhook = new IncomingWebhook(process.env.SLACK_FEEDLY_USAGE);
 
 module.exports = class Feedly {
 
     constructor(access_token) {
         this.api =  axios.create({
             baseURL: 'https://cloud.feedly.com/v3',
-            headers: {'Authorization': access_token} 
+            headers: {'Authorization': access_token}
+        });
+    }
+
+    notifySlack(feedlyResponse) {
+        const headers = feedlyResponse.headers;
+        const text = `You've ${headers['x-ratelimit-limit'] - headers['x-ratelimit-count']} calls left for the next ${Math.round(headers['x-ratelimit-reset'] / 360) / 10} hours.`;
+        return new Promise((resolve, reject) => {
+            (async () => {
+                await webhook.send({
+                    text: text
+                });
+                resolve(feedlyResponse);
+            })();
         });
     }
 
     listTags() {
         return this.api.get('/tags')
-            .then(({ data }) => {
+            .then(this.notifySlack)
+            .then(({data}) => {
                 data.map(labelData => {
                     if (labelData.id.includes('global.save')) {
                         labelData.label = 'Read later';
@@ -23,7 +40,8 @@ module.exports = class Feedly {
     }
 
     profile() {
-        return this.api.get('/profile');
+        return this.api.get('/profile')
+            .then(this.notifySlack);
     }
 
     createTag(tagId) {
@@ -45,6 +63,6 @@ module.exports = class Feedly {
             },
             title: title,
             description: description
-        });
+        }).then(this.notifySlack);
     };
 }

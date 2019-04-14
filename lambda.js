@@ -15,7 +15,7 @@ exports.lambdaHandler = async (event, context) => {
             const headers = profile.headers;
             response = {
                 "statusCode": 200,
-                'body': `Hi ${profile.data.givenName}, You've ${headers['x-ratelimit-limit'] - profile.headers['x-ratelimit-count']} calls left for the next ${Math.round(headers['x-ratelimit-reset'] / 360) / 10} hours.`
+                'body': `Hi ${profile.data.givenName}, You've ${headers['x-ratelimit-limit'] - headers['x-ratelimit-count']} calls left for the next ${Math.round(headers['x-ratelimit-reset'] / 360) / 10} hours.`
             };
         } else if (event.path === '/labels') {
             const tags = await api.listTags();
@@ -33,7 +33,7 @@ exports.lambdaHandler = async (event, context) => {
             response = {
                 'statusCode': 200,
                 'body': "Klaar!"
-            }
+            };
         }
     } catch (err) {
         console.log(err);
